@@ -1,18 +1,20 @@
-import React from "react";
-import BotCard from "./BotCard";
+import React from 'react';
+import BotCard from './BotCard';
 
-// Displays all bots in a grid format
-const BotCollection = ({ bots, onSelect }) => {
+const BotCollection = ({ bots, onSelect, onAddToArmy }) => {
   return (
     <div className="bot-collection">
-      <h2>Available Bots</h2>
-      <div className="bot-grid">
-        {bots.map((bot) => (
-          <BotCard key={bot.id} bot={bot} onClick={() => onSelect(bot)} />
-        ))}
-      </div>
+      {/* Map through each bot and display it using BotCard */}
+      {bots.map((bot) => (
+        <BotCard 
+          key={bot.id} 
+          bot={bot} 
+          onClick={() => onSelect(bot)} // Set selected bot on click
+          onAddToArmy={() => onAddToArmy(bot)} // Add bot to army on click
+        />
+      ))}
     </div>
   );
 };
 
-export default BotsCollection;
+export default BotCollection;

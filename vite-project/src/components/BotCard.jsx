@@ -1,17 +1,18 @@
-import React from "react";
+import React from 'react';
 
-// Displays a single bot's summary info
-const BotCard = ({ bot, onClick }) => {
-  const { name, avatar_url, bot_class, health, damage, armor, catchphrase } =
-    bot;
-
+const BotCard = ({ bot, onClick, onAddToArmy }) => {
   return (
     <div className="bot-card" onClick={onClick}>
-      <img src={avatar_url} alt={name} />
-      <h3>{name}</h3>
-      <p><em>{catchphrase}</em></p>
-      <p>Class: {bot_class}</p>
-      <p>⚔️ Damage: {damage} | 🛡️ Armor: {armor} | ❤️ Health: {health}</p>
+      {/* Bot's avatar and basic information */}
+      <img src={bot.avatar_url} alt={bot.name} />
+      <h3>{bot.name}</h3>
+      <p>{bot.bot_class}</p>
+      <p>Health: {bot.health}</p>
+      <p>Damage: {bot.damage}</p>
+      <p>Armor: {bot.armor}</p>
+      
+      {/* Button to enlist bot to the army */}
+      <button onClick={(e) => { e.stopPropagation(); onAddToArmy(bot); }}>Enlist Bot</button>
     </div>
   );
 };

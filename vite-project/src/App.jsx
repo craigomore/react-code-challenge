@@ -1,76 +1,95 @@
-import React, { useState, useEffect } from "react";
-import BotsCollection from "./components/BotsCollection";
-import BotArmy from "./components/BotArmy";
+import React, { useState, useEffect } from 'react';
+import BotCollection from './components/BotCollection';
+import YourBotArmy from './components/YourBotArmy';
+import BotSpecs from './components/BotSpecs';
+import SortBar from './components/SortBar';
 
-
-function App() {
-  // Store all bots fetched from the backend
+const App = () => {
+  // State for holding bot data and user's army
   const [bots, setBots] = useState([]);
-
-  // Store the bots enlisted in the user's army
   const [army, setArmy] = useState([]);
+  const [selectedBot, setSelectedBot] = useState(null); // Currently selected bot for detailed view
+  const [sortBy, setSortBy] = useState(null); // Sorting criteria (health, damage, armor)
+  const [filters, setFilters] = useState([]); // Filters for bot classes (Support, Medic, etc.)
 
-  // Store the bot selected for viewing detailed info
-  const [selectedBot, setSelectedBot] = useState(null);
-
-  // Fetch bots data when the component mounts
+  // Fetching bots data from the backend (json-server) on component mount
   useEffect(() => {
-    fetch("http://localhost:8001/bots")
+    fetch('http://localhost:8001/bots')
       .then((res) => res.json())
-      .then((data) => setBots(data))
-      .catch((err) => console.error("Error fetching bots:", err));
+      .then((data) => setBots(data)); // Set the bot data in state
   }, []);
 
-  // Function to add a bot to the army
-  const enlistBot = (bot) => {
-    // Prevent duplicates: only add if not already in the army
-    if (!army.find((b) => b.id === bot.id)) {
-      setArmy([...army, bot]);
-    }
+  // Handle sorting by selected criteria (health, damage, armor)
+  const handleSort = (criteria) => {
+    setSortBy(criteria); // Set the sorting criteria
+    const sortedBots = [...bots].sort((a, b) => b[criteria] - a[criteria]);
+    setBots(sortedBots); // Update the bots with sorted data
   };
 
-  // Function to remove a bot from the army
-  const removeBot = (bot) => {
-    // Filter out the bot from the army
-    setArmy(army.filter((b) => b.id !== bot.id));
+  // Toggle the filter by bot class (Support, Medic, etc.)
+  const toggleFilter = (className) => {
+    setFilters((prev) =>
+      prev.includes(className) ? prev.filter((c) => c !== className) : [...prev, className]
+    );
   };
 
-  // Function to discharge a bot forever (from both frontend and backend)
-  const dischargeBot = (bot) => {
-    // Remove from army first
-    removeBot(bot);
+  // Filter the bots by the selected classes
+  const filteredBots = bots.filter((bot) =>
+    filters.length === 0 || filters.includes(bot.bot_class)
+  );
 
-    // Then delete the bot from the backend
-    fetch(`http://localhost:8001/bots/${bot.id}`, {
-      method: "DELETE",
-    }).catch((err) => console.error("Error deleting bot:", err));
+  // Add a bot to the army if not already enlisted
+  const addToArmy = (bot) => {
+    if (army.some((b) => b.id === bot.id)) return; // Ensure bot is not already in the army
+    setArmy([...army, bot]); // Add bot to the army
   };
 
-  // Function to select a bot for viewing more details
-  const handleBotClick = (bot) => {
-    setSelectedBot(bot); // Sets the bot as selected to show more details
+  // Remove a bot from the army
+  const removeFromArmy = (bot) => {
+    setArmy(army.filter((b) => b.id !== bot.id)); // Filter out the bot to be removed
+  };
+
+  // Delete a bot from the backend and state
+  const deleteBot = (botId) => {
+    fetch(`http://localhost:8001/bots/${botId}`, {
+      method: 'DELETE', // HTTP DELETE request
+    }).then(() => {
+      // Remove the bot from both army and bot list
+      setArmy(army.filter((bot) => bot.id !== botId));
+      setBots(bots.filter((bot) => bot.id !== botId));
+    });
   };
 
   return (
-    <div className="App">
-      <h1>Bot Collection</h1>
-      <BotsCollection bots={bots} onEnlist={enlistBot} onClick={handleBotClick} />
-      <h2>Your Bot Army</h2>
-      <BotArmy army={army} onRemove={removeBot} onDischarge={dischargeBot} />
-      
-      {/* Optional: Display detailed view of selected bot */}
-      {selectedBot && (
-        <div className="bot-specs">
-          <h2>{selectedBot.name}</h2>
-          <img src={selectedBot.avatar_url} alt={selectedBot.name} />
-          <p><em>{selectedBot.catchphrase}</em></p>
-          <p>Class: {selectedBot.bot_class}</p>
-          <p>⚔️ Damage: {selectedBot.damage} | 🛡️ Armor: {selectedBot.armor} | ❤️ Health: {selectedBot.health}</p>
-          <button onClick={() => enlistBot(selectedBot)}>Enlist</button>
-        </div>
-      )}
+    <div>
+      <h1>Bot Battlr</h1>
+
+      {/* SortBar allows users to sort bots */}
+      <SortBar onSort={handleSort} />
+
+      {/* Filter buttons for bot classes */}
+      <div>
+        <button onClick={() => toggleFilter('Support')}>Filter Support</button>
+        <button onClick={() => toggleFilter('Medic')}>Filter Medic</button>
+        <button onClick={() => toggleFilter('Assault')}>Filter Assault</button>
+        <button onClick={() => toggleFilter('Defender')}>Filter Defender</button>
+        <button onClick={() => toggleFilter('Captain')}>Filter Captain</button>
+        <button onClick={() => toggleFilter('Witch')}>Filter Witch</button>
+      </div>
+
+      <div className="main-content">
+        {/* Show selected bot details or the bot collection */}
+        {selectedBot ? (
+          <BotSpecs bot={selectedBot} onEnlist={addToArmy} onBack={() => setSelectedBot(null)} />
+        ) : (
+          <BotCollection bots={filteredBots} onSelect={setSelectedBot} onAddToArmy={addToArmy} />
+        )}
+
+        {/* Render the user's army */}
+        <YourBotArmy bots={army} onRemove={removeFromArmy} onDelete={deleteBot} />
+      </div>
     </div>
   );
-}
+};
 
 export default App;
