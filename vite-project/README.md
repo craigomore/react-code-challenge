@@ -1,16 +1,25 @@
-# React + Vite
+# Bot Battlr
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to **Bot Battlr**, the one and only spot in the known universe where you can custom build your own Bot Army! In this app, you will be able to browse through a list of robots, enlist them into your army, view their details, and discharge them from service forever.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **View all Bots**: Browse a list of bots with their details.
+- **Enlist Bots**: Add bots to your personal army.
+- **Remove Bots from Army**: Take bots out of your army if you no longer need them.
+- **Discharge Bots**: Permanently delete a bot from both your army and the database.
+- **Sort and Filter**: Sort bots by health, damage, or armor, and filter bots by class (e.g., Support, Medic, etc.).
 
-## React Compiler
+## Requirements
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Node.js** (version 14.x or later)
+- **npm** (Node Package Manager)
+- **json-server** (to simulate a backend API)
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/bot-battlr.git
+cd bot-battlr
