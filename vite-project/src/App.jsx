@@ -14,7 +14,7 @@ const App = () => {
 
   // Fetching bots data from the backend (json-server) on component mount
   useEffect(() => {
-    fetch('http://localhost:8001/bots')
+    fetch('http://localhost:3000/bots')
       .then((res) => res.json())
       .then((data) => setBots(data)); // Set the bot data in state
   }, []);

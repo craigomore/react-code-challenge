@@ -21,7 +21,7 @@ const YourBotArmy = ({ bots = [], onRemove, onDelete }) => {
 
               <div className="army-buttons">
                 <button onClick={() => onRemove(bot)}>Remove from Army</button>
-                <button onClick={() => onDelete(bot.id)}>Discharge Bot</button>
+               
               </div>
             </div>
           ))}
